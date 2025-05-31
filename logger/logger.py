@@ -10,14 +10,18 @@ class Logger:
     z automatyczną rotacją i retencją.
     """
     def __init__(self, config_path="logger/config.json"):
-        with open(config_path) as f:
+        base = os.path.dirname(__file__)
+        full_path = os.path.join(base, os.path.basename(config_path))
+        with open(full_path, 'r', encoding='utf-8') as f:
             cfg = json.load(f)
-        self.log_dir = cfg["log_dir"]
-        self.pattern = cfg["filename_pattern"]
-        self.max_size = cfg["max_size_mb"]
+
+        self.log_dir   = cfg["log_dir"]
+        self.pattern   = cfg["filename_pattern"]
+        self.max_size  = cfg["max_size_mb"]
         self.retention = cfg["backup_count"]
         self.buffer_size = cfg["buffer_size"]
         self._buffer = []
+
         os.makedirs(self.log_dir, exist_ok=True)
         self._open_file()
 
@@ -45,14 +49,13 @@ class Logger:
         self._buffer.clear()
 
     def _rotate_if_needed(self):
-        size_mb = os.path.getsize(self.current) / (1024*1024)
+        size_mb = os.path.getsize(self.current) / (1024 * 1024)
         if size_mb >= self.max_size:
             self._rotate()
 
     def _rotate(self):
         self.file.close()
-        base = os.path.basename(self.current)
-        for i in range(self.retention-1, 0, -1):
+        for i in range(self.retention - 1, 0, -1):
             src = f"{self.current}.{i}"
             dst = f"{self.current}.{i+1}"
             if os.path.exists(src):

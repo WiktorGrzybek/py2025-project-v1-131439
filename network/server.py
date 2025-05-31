@@ -3,10 +3,13 @@ import socket
 import threading
 import yaml
 import json
-from sensors.temperature_sensor import TemperatureSensor
-from sensors.humidity_sensor import HumiditySensor
-from sensors.pressure_sensor import PressureSensor
 from datetime import datetime
+
+from sensors.temperature_sensor import TemperatureSensor
+from sensors.humidity_sensor    import HumiditySensor
+from sensors.pressure_sensor    import PressureSensor
+from sensors.light_sensor       import LightSensor
+from sensors.air_quality_sensor import AirQualitySensor
 
 class NetworkServer:
     """
@@ -21,7 +24,9 @@ class NetworkServer:
         self.sensors = [
             TemperatureSensor('temp1'),
             HumiditySensor('hum1'),
-            PressureSensor('pres1')
+            PressureSensor('pres1'),
+            LightSensor('light1'),
+            AirQualitySensor('airq1')
         ]
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -38,9 +43,9 @@ class NetworkServer:
         try:
             for s in self.sensors:
                 data = {
-                    'sensor': s.sensor_id,
-                    'value': s.read_value(),
-                    'unit': s.unit,
+                    'sensor':   s.sensor_id,
+                    'value':    s.read_value(),
+                    'unit':     s.unit,
                     'timestamp': datetime.now().isoformat()
                 }
                 client.send((json.dumps(data) + '\n').encode())
