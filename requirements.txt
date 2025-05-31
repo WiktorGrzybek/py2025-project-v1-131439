@@ -1,1 +1,6 @@
-"pandas\nnumpy\nmatplotlib\nscipy\npyyaml\npytest" 
+pandas
+numpy
+matplotlib
+scipy
+pyyaml
+pytest
