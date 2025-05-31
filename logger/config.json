@@ -1,0 +1,7 @@
+{
+  "log_dir": "./logs",
+  "filename_pattern": "sensors_%Y%m%d.csv",
+  "max_size_mb": 5,
+  "backup_count": 5,
+  "buffer_size": 100
+}
